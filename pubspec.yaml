@@ -7,9 +7,11 @@ environment:
   sdk: '>=2.19.2 <3.0.0'
 
 dependencies:
+  dio: ^5.0.0
   flutter:
     sdk: flutter
   flutter_dotenv: ^5.0.2
+  flutter_riverpod: ^2.2.0
   go_router: ^6.0.9
 
 dev_dependencies:
