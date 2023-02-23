@@ -25,7 +25,7 @@ class MovieMovieDB {
     final String overview;
     final double popularity;
     final String posterPath;
-    final DateTime releaseDate;
+    final DateTime? releaseDate;
     final String title;
     final bool video;
     final double voteAverage;
@@ -36,16 +36,18 @@ class MovieMovieDB {
         backdropPath: json["backdrop_path"] ?? '',
         genreIds: List<int>.from(json["genre_ids"].map((x) => x)),
         id: json["id"],
-        originalLanguage: json["original_language"],
-        originalTitle: json["original_title"],
+        originalLanguage: json["original_language"] ?? '',
+        originalTitle: json["original_title"] ?? '',
         overview: json["overview"] ?? '',
-        popularity: json["popularity"]?.toDouble(),
+        popularity: json["popularity"]?.toDouble() ?? 0,
         posterPath: json["poster_path"] ?? '',
-        releaseDate: DateTime.parse(json["release_date"]),
-        title: json["title"],
-        video: json["video"],
-        voteAverage: json["vote_average"]?.toDouble(),
-        voteCount: json["vote_count"],
+        releaseDate: json["release_date"] != null && json["release_date"].toString().isNotEmpty
+          ?  DateTime.parse(json["release_date"])
+          : null,
+        title: json["title"] ?? 'No Title',
+        video: json["video"] ?? false,
+        voteAverage: json["vote_average"]?.toDouble() ?? 0,
+        voteCount: json["vote_count"] ?? 0,
     );
 
     Map<String, dynamic> toJson() => {
@@ -58,7 +60,9 @@ class MovieMovieDB {
         "overview": overview,
         "popularity": popularity,
         "poster_path": posterPath,
-        "release_date": "${releaseDate.year.toString().padLeft(4, '0')}-${releaseDate.month.toString().padLeft(2, '0')}-${releaseDate.day.toString().padLeft(2, '0')}",
+        "release_date": (releaseDate != null)
+          ? "${releaseDate!.year.toString().padLeft(4, '0')}-${releaseDate!.month.toString().padLeft(2, '0')}-${releaseDate!.day.toString().padLeft(2, '0')}"
+          : null,
         "title": title,
         "video": video,
         "vote_average": voteAverage,
