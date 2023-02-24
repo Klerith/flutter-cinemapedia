@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 class CustomBottomNavigation extends StatelessWidget {
   const CustomBottomNavigation({super.key});
 
-  int getCurrentIndex( BuildContext context ) {
+  static int getCurrentIndex( BuildContext context ) {
     final String location = GoRouterState.of(context).location;
 
     switch (location) {
