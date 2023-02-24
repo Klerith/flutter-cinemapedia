@@ -8,11 +8,13 @@ import 'package:cinemapedia/presentation/widgets/widgets.dart';
 class HomeScreen extends StatelessWidget {
 
   static const name = 'home-screen';
-  final Widget childView;
+  // final Widget childView;
+  final int pageIndex;
 
   const HomeScreen({
     super.key, 
-    required this.childView
+    // required this.childView
+    this.pageIndex = 0
   });
 
   final viewRoutes = const <Widget>[
@@ -26,12 +28,12 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       // body: HomeView(),
-      body: childView,
-      // body: IndexedStack(
-      //   index: CustomBottomNavigation.getCurrentIndex(context),
-      //   children: viewRoutes,
-      // ),
-      bottomNavigationBar: const CustomBottomNavigation(),
+      // body: childView,
+      body: IndexedStack(
+        index: pageIndex,
+        children: viewRoutes,
+      ),
+      bottomNavigationBar: CustomBottomNavigation(currentIndex: pageIndex),
     );
   }
 }

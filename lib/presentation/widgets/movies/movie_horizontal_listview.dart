@@ -1,4 +1,5 @@
 import 'package:cinemapedia/config/helpers/human_formats.dart';
+import 'package:cinemapedia/presentation/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
@@ -116,7 +117,15 @@ class _Slide extends StatelessWidget {
                     );
                   }
                   return GestureDetector(
-                    onTap: () => context.push('/movie/${ movie.id }'),
+                    // onTap: () => context.push('/movie/${ movie.id }'),
+                    onTap: () => context.push('/home/0/movie/${ movie.id }'),
+                    // onTap: () => context.pushNamed(
+                    //   MovieScreen.name, 
+                    //   params: { 
+                    //     'id': '${movie.id}', 
+                    //     'page': '2' 
+                    //   }
+                    // ),
                     child: FadeIn(child: child),
                   );
                   

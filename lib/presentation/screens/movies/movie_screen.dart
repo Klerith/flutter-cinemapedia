@@ -6,6 +6,7 @@ import 'package:cinemapedia/domain/entities/movie.dart';
 
 import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:cinemapedia/presentation/providers/movies/movie_info_provider.dart';
+import 'package:go_router/go_router.dart';
 
 
 class MovieScreen extends ConsumerStatefulWidget {
@@ -71,7 +72,6 @@ class _MovieDetails extends StatelessWidget {
 
     final size = MediaQuery.of(context).size;
     final textStyles = Theme.of(context).textTheme;
-
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
