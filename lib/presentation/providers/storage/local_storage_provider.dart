@@ -1,3 +1,4 @@
+import 'package:cinemapedia/domain/repositories/local_storage_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:cinemapedia/domain/entities/movie.dart';
@@ -10,39 +11,61 @@ final localStorageRepositoryProvider = Provider(
   }
 );
 
-final favoritesMoviesProvider = StateNotifierProvider((ref) {
+
+
+final favoritesMoviesProvider = StateNotifierProvider<StorageMoviesNotifier, Map<int, Movie>>((ref) {
 
   final localStorageRepository = ref.watch(localStorageRepositoryProvider);
 
   return StorageMoviesNotifier(
-    toggleMovieCallback: localStorageRepository.toggleFavorite,
+    localStorageRepository: localStorageRepository,
     initialMovies: {},
   );
 });
 
 
-typedef ToggleMovieCallback = Future<void> Function(Movie movie);
 
 class StorageMoviesNotifier extends StateNotifier<Map<int, Movie>> {
 
   final Map<int,Movie> initialMovies;
-  final ToggleMovieCallback toggleMovieCallback;
+  final LocalStorageRepository localStorageRepository;
+
+  int page = 0;
 
   StorageMoviesNotifier({
     this.initialMovies = const{},
-    required this.toggleMovieCallback,
+    required this.localStorageRepository,
   }): super( initialMovies );
 
+  Future<void> loadNextPage() async{
+
+    final movies = await localStorageRepository.loadMovies(offset: page * 10);
+    page++;
+
+    // actualizará 10 veces el state
+    // movies.forEach((movie) {
+    //   state[movie.id] = movie;
+    // });
+    final tempMoviesMap = <int, Movie>{};
+    for (var movie in movies) {
+      tempMoviesMap[movie.id] = movie;
+    }
+    // state.addAll(tempMoviesMap);
+    state = {...state, ...tempMoviesMap};
+
+  }
+
   Future<void> toggleFavorite( Movie movie ) async {
-    await toggleMovieCallback(movie);
     final bool isMovieInFavorites = state[movie.id] != null;
 
     if ( isMovieInFavorites ) {
       state.remove(movie.id);
+      state = {...state };
     } else {
       state = { ...state, movie.id: movie };
     }
 
   }
+
 
 }

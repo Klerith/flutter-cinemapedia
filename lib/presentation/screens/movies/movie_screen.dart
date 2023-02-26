@@ -6,7 +6,6 @@ import 'package:cinemapedia/domain/entities/movie.dart';
 
 import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:cinemapedia/presentation/providers/movies/movie_info_provider.dart';
-import 'package:go_router/go_router.dart';
 
 
 class MovieScreen extends ConsumerStatefulWidget {
@@ -202,8 +201,17 @@ class _ActorsByMovie extends ConsumerWidget {
 }
 
 
+// Stream para estar pendiente de los cambios de favoritos
+// final isMovieFavoriteStream = StreamProvider((ref) {
 
 
+
+// });
+
+final isFavoriteProvider = FutureProvider.family((ref, int movieId) async{
+  final localStorageRepository = ref.watch(localStorageRepositoryProvider);
+  return localStorageRepository.isMovieFavorite(movieId);
+});
 
 class _CustomSliverAppBar extends ConsumerWidget {
 
@@ -217,18 +225,31 @@ class _CustomSliverAppBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref ) {
 
     final size = MediaQuery.of(context).size;
+    final isFavoriteFuture = ref.watch(isFavoriteProvider(movie.id));
+
 
     return SliverAppBar(
       backgroundColor: Colors.black,
       expandedHeight: size.height * 0.7,
       foregroundColor: Colors.white,
       actions: [
-        // TODO: save and remove from favorites
-        IconButton(onPressed: (){
-          ref.read(favoritesMoviesProvider.notifier)
-            .toggleFavorite(movie);
+        
+        IconButton(onPressed: ()async{
+          await ref.read( localStorageRepositoryProvider ).toggleFavorite(movie);
+          ref.invalidate(isFavoriteProvider(movie.id));
         }, 
-        icon: const Icon( Icons.favorite_border ))
+        icon: isFavoriteFuture.when(
+          data: (data) => data 
+            ?  const Icon( Icons.favorite_rounded, color: Colors.red, )
+            :  const Icon( Icons.favorite_border ), 
+          error: (err, stack) => throw UnimplementedError(), 
+          loading: () => const CircularProgressIndicator(strokeWidth: 2)
+        ),
+        
+        //  const Icon( Icons.favorite_border )
+        
+        // const Icon( Icons.favorite_border )
+        )
         // icon: const Icon( Icons.favorite_rounded, color: Colors.red, ))
       ],
       flexibleSpace: FlexibleSpaceBar(
