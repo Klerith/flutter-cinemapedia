@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 import 'package:cinemapedia/presentation/providers/providers.dart';
+import 'package:cinemapedia/presentation/widgets/widgets.dart';
+import 'package:go_router/go_router.dart';
+
 
 class FavoritesView extends ConsumerStatefulWidget {
   const FavoritesView({super.key});
@@ -12,47 +14,59 @@ class FavoritesView extends ConsumerStatefulWidget {
 }
 
 class FavoritesViewState extends ConsumerState<FavoritesView> {
+
+  bool isLastPage = false;
+  bool isLoading = false;
+
   @override
   void initState() {
     super.initState();
-    ref.read(favoritesMoviesProvider.notifier).loadNextPage();
+    // ref.read(favoritesMoviesProvider.notifier).loadNextPage();
+    loadNextPage();
+  }
+
+  void loadNextPage() async {
+    if ( isLastPage || isLoading ) return;
+    isLoading = true;
+
+    final movies = await ref.read(favoritesMoviesProvider.notifier).loadNextPage();
+    isLoading = false;
+    if ( movies.isEmpty ) {
+      isLastPage = true;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final moviesMap = ref.watch(favoritesMoviesProvider).values.toList();
+    final favoriteMovies = ref.watch(favoritesMoviesProvider).values.toList();
 
-    return StaggeredGrid.count(
-      crossAxisCount: 2,
-      mainAxisSpacing: 2,
-      crossAxisSpacing: 2,
-      children: [
-        StaggeredGridTile.count(
-          crossAxisCellCount: 2,
-          mainAxisCellCount: 2,
-          child: Text('0'),
+    if ( favoriteMovies.isEmpty ) {
+      final colors = Theme.of(context).colorScheme;
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // Text('No hay películas en favoritos'),
+            Icon( Icons.favorite_outline_sharp, size: 60, color: colors.primary ),
+            Text('Ohh no!', style: TextStyle(fontSize: 30, color: colors.primary ) ),
+            const Text('No tienes películas favoritas', style: TextStyle(fontSize: 20, color: Colors.black45, ) ),
+            const SizedBox(height: 20 ),
+
+            FilledButton.tonal(
+              onPressed: (){
+                context.go('/home/0');
+              }, 
+              child: const Text('Empieza a buscar')
+            )
+          ],
         ),
-        StaggeredGridTile.count(
-          crossAxisCellCount: 2,
-          mainAxisCellCount: 1,
-          child: Text('1'),
-        ),
-        StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: Text('2'),
-        ),
-        StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: Text('3'),
-        ),
-        StaggeredGridTile.count(
-          crossAxisCellCount: 4,
-          mainAxisCellCount: 2,
-          child: Text('4'),
-        ),
-      ],
+      );
+    }
+
+    return MovieMasonry(
+      movies: favoriteMovies,
+      loadNextPage: loadNextPage,
     );
   }
 }
