@@ -19,7 +19,7 @@ class PopularView extends ConsumerWidget {
       body: MovieMasonry(
         loadNextPage: () => ref.read(popularMoviesProvider.notifier).loadNextPage(),
         movies: popularMovies
-      )
+      ),
     );
   }
 }
