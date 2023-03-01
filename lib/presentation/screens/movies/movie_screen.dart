@@ -77,7 +77,7 @@ class _MovieDetails extends StatelessWidget {
       children: [
 
         Padding(
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.symmetric( horizontal: 8, vertical: 15),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -128,7 +128,6 @@ class _MovieDetails extends StatelessWidget {
 
         _ActorsByMovie(movieId: movie.id.toString() ),
 
-        const SizedBox(height: 50 ),
       ],
     );
   }
