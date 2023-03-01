@@ -83,7 +83,11 @@ class _MovieDetails extends StatelessWidget {
         //* Generos de la película
         _Genres(movie: movie),
 
+        //* Actores de la película
         ActorsByMovie(movieId: movie.id.toString() ),
+
+        //* Películas similares
+        SimilarMovies(movieId: movie.id ),
 
       ],
     );
@@ -175,9 +179,6 @@ class _TitleAndOverview extends StatelessWidget {
     );
   }
 }
-
-
-
 
 
 final isFavoriteProvider = FutureProvider.family.autoDispose((ref, int movieId) {
