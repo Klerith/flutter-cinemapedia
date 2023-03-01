@@ -1,15 +1,13 @@
-import 'package:cinemapedia/config/helpers/human_formats.dart';
 import 'package:flutter/material.dart';
 
 class MovieRating extends StatelessWidget {
 
   final double voteAverage; 
-  final double popularity; 
+
 
   const MovieRating({
     super.key,
-    required this.voteAverage,
-    required this.popularity
+    required this.voteAverage
   });
 
   @override
@@ -26,9 +24,7 @@ class MovieRating extends StatelessWidget {
           Text('$voteAverage',
               style: textStyles.bodyMedium
                   ?.copyWith(color: Colors.yellow.shade800)),
-          const Spacer(),
-          Text(HumanFormats.number(popularity),
-              style: textStyles.bodySmall),
+          
         ],
       ),
     );
