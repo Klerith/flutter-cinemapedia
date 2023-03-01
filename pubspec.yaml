@@ -19,6 +19,7 @@ dependencies:
   intl: ^0.18.0
   isar: ^3.0.5
   isar_flutter_libs: ^3.0.5
+  youtube_player_flutter: ^8.1.2
 
 dev_dependencies:
   build_runner: ^2.3.3
