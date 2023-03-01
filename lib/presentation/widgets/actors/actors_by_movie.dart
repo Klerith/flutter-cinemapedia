@@ -44,12 +44,15 @@ class ActorsByMovie extends ConsumerWidget {
                 FadeInRight(
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
-                    child: Image.network(
-                      actor.profilePath,
+                    child: FadeInImage(
                       height: 180,
                       width: 135,
                       fit: BoxFit.cover,
-                    ),
+                      placeholder: const AssetImage('assets/loaders/bottle-loader.gif'),
+                      image: NetworkImage(
+                        actor.profilePath,
+                      ),
+                    )
                   ),
                 ),
 
