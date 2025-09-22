@@ -3,9 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:animate_do/animate_do.dart';
 
 import 'package:cinemapedia/domain/entities/movie.dart';
-
 import 'package:cinemapedia/presentation/providers/providers.dart';
-import 'package:cinemapedia/presentation/providers/movies/movie_info_provider.dart';
 
 class MovieScreen extends ConsumerStatefulWidget {
   static const name = 'movie-screen';
@@ -33,7 +31,8 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
 
     if (movie == null) {
       return const Scaffold(
-          body: Center(child: CircularProgressIndicator(strokeWidth: 2)));
+        body: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+      );
     }
 
     return Scaffold(
@@ -42,9 +41,11 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
         slivers: [
           _CustomSliverAppBar(movie: movie),
           SliverList(
-              delegate: SliverChildBuilderDelegate(
-                  (context, index) => _MovieDetails(movie: movie),
-                  childCount: 1))
+            delegate: SliverChildBuilderDelegate(
+              (context, index) => _MovieDetails(movie: movie),
+              childCount: 1,
+            ),
+          ),
         ],
       ),
     );
@@ -72,10 +73,7 @@ class _MovieDetails extends StatelessWidget {
               // Imagen
               ClipRRect(
                 borderRadius: BorderRadius.circular(20),
-                child: Image.network(
-                  movie.posterPath,
-                  width: size.width * 0.3,
-                ),
+                child: Image.network(movie.posterPath, width: size.width * 0.3),
               ),
 
               const SizedBox(width: 10),
@@ -90,24 +88,27 @@ class _MovieDetails extends StatelessWidget {
                     Text(movie.overview),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),
 
-        // Generos de la película
+        // Géneros de la película
         Padding(
           padding: const EdgeInsets.all(8),
           child: Wrap(
             children: [
-              ...movie.genreIds.map((gender) => Container(
-                    margin: const EdgeInsets.only(right: 10),
-                    child: Chip(
-                      label: Text(gender),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
+              ...movie.genreIds.map(
+                (gender) => Container(
+                  margin: const EdgeInsets.only(right: 10),
+                  child: Chip(
+                    label: Text(gender),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                  ))
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -162,17 +163,16 @@ class _ActorsByMovie extends ConsumerWidget {
                 ),
 
                 // Nombre
-                const SizedBox(
-                  height: 5,
-                ),
+                const SizedBox(height: 5),
 
                 Text(actor.name, maxLines: 2),
                 Text(
                   actor.character ?? '',
                   maxLines: 2,
                   style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      overflow: TextOverflow.ellipsis),
+                    fontWeight: FontWeight.bold,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ],
             ),
@@ -183,13 +183,13 @@ class _ActorsByMovie extends ConsumerWidget {
   }
 }
 
-class _CustomSliverAppBar extends StatelessWidget {
+class _CustomSliverAppBar extends ConsumerWidget {
   final Movie movie;
 
   const _CustomSliverAppBar({required this.movie});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.of(context).size;
 
     return SliverAppBar(
@@ -199,7 +199,9 @@ class _CustomSliverAppBar extends StatelessWidget {
       actions: [
         IconButton(
           // TODO: Realizar el toggle de favorito
-          onPressed: () {},
+          onPressed: () {
+            ref.read(localStorageRepositoryProvider).toggleFavoriteMovie(movie);
+          },
           icon: const Icon(Icons.favorite_border),
           // icon: const Icon(Icons.favorite_rounded, color: Colors.red),
         ),
@@ -234,23 +236,19 @@ class _CustomSliverAppBar extends StatelessWidget {
 
             // Gradiente para el corazón
             const _CustomGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                stops: [0.0, 0.3],
-                colors: [Colors.black54, Colors.transparent]),
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+              stops: [0.0, 0.3],
+              colors: [Colors.black54, Colors.transparent],
+            ),
 
             // Gradiente para el corazón
             const _CustomGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                stops: [
-                  0.0,
-                  0.3
-                ],
-                colors: [
-                  Colors.black87,
-                  Colors.transparent,
-                ]),
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              stops: [0.0, 0.3],
+              colors: [Colors.black87, Colors.transparent],
+            ),
 
             // const SizedBox.expand(
             //   child: DecoratedBox(
@@ -298,11 +296,12 @@ class _CustomGradient extends StatelessWidget {
   final List<double> stops;
   final List<Color> colors;
 
-  const _CustomGradient(
-      {this.begin = Alignment.topCenter,
-      this.end = Alignment.bottomCenter,
-      required this.colors,
-      required this.stops});
+  const _CustomGradient({
+    this.begin = Alignment.topCenter,
+    this.end = Alignment.bottomCenter,
+    required this.colors,
+    required this.stops,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -310,7 +309,11 @@ class _CustomGradient extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-              begin: begin, end: end, stops: stops, colors: colors),
+            begin: begin,
+            end: end,
+            stops: stops,
+            colors: colors,
+          ),
         ),
       ),
     );
