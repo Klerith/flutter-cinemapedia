@@ -45,4 +45,4 @@ class AppDatabase extends _$AppDatabase {
   }
 }
 
-final database = AppDatabase();
+final db = AppDatabase();
