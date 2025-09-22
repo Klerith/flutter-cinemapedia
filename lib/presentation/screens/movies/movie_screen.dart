@@ -191,6 +191,7 @@ class _CustomSliverAppBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.of(context).size;
+    final isFavoriteFuture = ref.watch(isFavoriteMovieProvider(movie.id));
 
     return SliverAppBar(
       backgroundColor: Colors.black,
@@ -198,11 +199,20 @@ class _CustomSliverAppBar extends ConsumerWidget {
       foregroundColor: Colors.white,
       actions: [
         IconButton(
-          // TODO: Realizar el toggle de favorito
           onPressed: () {
             ref.read(localStorageRepositoryProvider).toggleFavoriteMovie(movie);
+            ref.invalidate(isFavoriteMovieProvider(movie.id));
           },
-          icon: const Icon(Icons.favorite_border),
+          icon: isFavoriteFuture.when(
+            data: (isFavorite) => isFavorite
+                ? const Icon(Icons.favorite_rounded, color: Colors.red)
+                : const Icon(Icons.favorite_border),
+            error: (_, __) =>
+                throw Exception('Error al cargar el estado de favorito'),
+            loading: () => const CircularProgressIndicator(strokeWidth: 2),
+          ),
+
+          // const Icon(Icons.favorite_border),
           // icon: const Icon(Icons.favorite_rounded, color: Colors.red),
         ),
       ],
