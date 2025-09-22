@@ -1,3 +1,4 @@
+import 'package:cinemapedia/config/database/database.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cinemapedia/config/router/app_router.dart';
@@ -9,6 +10,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: '.env');
+
+  // final database = AppDatabase();
+  // final favoriteMovies = await database.managers.favoriteMovies.get();
+  // print(favoriteMovies.length);
 
   runApp(const ProviderScope(child: MainApp()));
 }
