@@ -14,6 +14,7 @@ part 'database.g.dart';
 
 class FavoriteMovies extends Table {
   IntColumn get id => integer().autoIncrement()();
+  IntColumn get movieId => integer().named('movie_id')();
   TextColumn get backdropPath => text().named('backdrop_path')();
   TextColumn get originalTitle => text().named('original_title')();
   TextColumn get posterPath => text().named('poster_path')();

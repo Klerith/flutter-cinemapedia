@@ -13,7 +13,7 @@ class DriftDatasource extends LocalStorageDatasource {
   Future<bool> isFavoriteMovie(int movieId) async {
     // Construir el query
     final query = database.select(database.favoriteMovies)
-      ..where((table) => table.id.equals(movieId));
+      ..where((table) => table.movieId.equals(movieId));
 
     // Ejecutar el query
     final favoriteMovie = await query.getSingleOrNull();
@@ -36,7 +36,7 @@ class DriftDatasource extends LocalStorageDatasource {
     // Convertimos cada fila de la base de datos a una entidad Movie
     final movies = favoriteMoviesRows
         .map((row) => Movie(
-              id: row.id,
+              id: row.movieId,
               title: row.title,
               posterPath: row.posterPath,
               backdropPath: row.backdropPath,
@@ -70,6 +70,7 @@ class DriftDatasource extends LocalStorageDatasource {
     // Insertar la película como favorita en la base de datos
     await database.into(database.favoriteMovies).insert(
           FavoriteMoviesCompanion.insert(
+            movieId: movieId.id,
             title: movieId.title,
             posterPath: movieId.posterPath,
             backdropPath: movieId.backdropPath,
