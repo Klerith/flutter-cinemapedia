@@ -34,6 +34,25 @@ class _FavoritesViewState extends ConsumerState<FavoritesView> {
     //     itemCount: favoriteMovies.keys.length,
     //   ),
     // );
+    if (favoriteMovies.isEmpty) {
+      final textTheme = Theme.of(context).textTheme;
+      final colorPrimary = Theme.of(context).colorScheme.primary;
+      return Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.favorite_border, size: 100, color: colorPrimary),
+              Text(
+                'No tienes películas favoritas',
+                style: textTheme.titleMedium,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       body: MovieMasonry(
         movies: favoriteMovies.values.toList(),
