@@ -1,3 +1,5 @@
+import 'package:cinemapedia/presentation/providers/storage/favorite_movies_provider.dart';
+import 'package:cinemapedia/presentation/providers/storage/is_favorite_movie_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:animate_do/animate_do.dart';
@@ -185,14 +187,15 @@ class _ActorsByMovie extends ConsumerWidget {
   }
 }
 
-class _CustomSliverAppBar extends StatelessWidget {
+class _CustomSliverAppBar extends ConsumerWidget {
   final Movie movie;
 
   const _CustomSliverAppBar({required this.movie});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.of(context).size;
+    final isFavoriteFuture = ref.watch(isFavoriteMovieProvider(movie.id));
 
     return SliverAppBar(
       backgroundColor: Colors.black,
@@ -201,11 +204,22 @@ class _CustomSliverAppBar extends StatelessWidget {
 
       actions: [
         IconButton(
-          onPressed: () {
-            // TODO: implementar
+          onPressed: () async {
+            ref
+                .read(favoriteMoviesProvider.notifier)
+                .toggleFavoriteMovie(movie);
+            ref.invalidate(isFavoriteMovieProvider(movie.id));
           },
+          icon: isFavoriteFuture.when(
+            data: (isFavorite) => isFavorite
+                ? const Icon(Icons.favorite, color: Colors.red)
+                : const Icon(Icons.favorite_border_outlined),
+            error: (_, __) =>
+                throw Exception('Error al cargar el estado de favoritos'),
+            loading: () => const CircularProgressIndicator(strokeWidth: 2),
+          ),
           // icon: const Icon(Icons.favorite_border_outlined),
-          icon: const Icon(Icons.favorite, color: Colors.red),
+          // icon: const Icon(Icons.favorite, color: Colors.red),
         ),
       ],
 
